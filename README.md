@@ -18,7 +18,7 @@ Text to text generation model built with Next.js, React, TypeScript, Zustand, an
 
 ## Features
 
-Based on the codebase, the application includes the following features:
+The application includes the following features:
 
 *   User Authentication (Sign up, Login with Email/Password, Google Login)
 *   Create, list, and manage chat conversations
