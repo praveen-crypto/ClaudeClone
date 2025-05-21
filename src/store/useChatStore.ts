@@ -8,8 +8,7 @@ import {
   pinChat, 
   sendMessage, 
   getMessages, 
-  deleteMessage, 
-  addReaction 
+  deleteMessage
 } from '@/lib/firebase/firestore';
 import { Chat, Message } from '@/types';
 
@@ -35,8 +34,7 @@ interface ChatState {
   loadMoreMessages: () => Promise<void>;
   sendNewMessage: (chatId: string, userId: string, content: string, type?: string) => Promise<void>;
   removeMessage: (chatId: string, messageId: string) => Promise<void>;
-  addMessageReaction: (chatId: string, messageId: string, userId: string, reaction: string) => Promise<void>;
-  
+
   // Error handling
   clearError: () => void;
   
@@ -50,7 +48,7 @@ const useChatStore = create<ChatState>()(
     chats: [],
     currentChatId: null,
     messages: [],
-    isLoading: false,
+    isLoading: true,
     error: null,
     hasMore: true,
     lastMessageId: null,
@@ -238,9 +236,14 @@ const useChatStore = create<ChatState>()(
           );
           
           // Sort chats by updatedAt (newest first)
-          updatedChats.sort((a, b) => 
-            b.updatedAt.getTime() - a.updatedAt.getTime()
-          );
+          updatedChats.sort((a, b) => {
+            const getTime = (date: any) => {
+              if (date instanceof Date) return date.getTime();
+              if (date && typeof date.seconds === 'number') return new Date(date.seconds * 1000).getTime();
+              return 0;
+            };
+            return getTime(b.updatedAt) - getTime(a.updatedAt);
+          });
           
           return {
             messages: [...state.messages, newMessage],
@@ -266,18 +269,6 @@ const useChatStore = create<ChatState>()(
       } catch (error: any) {
         set({ 
           error: error.message || 'An error occurred while deleting message'
-        });
-        throw error;
-      }
-    },
-    
-    addMessageReaction: async (chatId, messageId, userId, reaction) => {
-      set({ error: null });
-      try {
-        await addReaction(chatId, messageId, userId, reaction);
-      } catch (error: any) {
-        set({ 
-          error: error.message || 'An error occurred while adding reaction'
         });
         throw error;
       }

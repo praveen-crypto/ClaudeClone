@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import useAuthStore from '@/store/useAuthStore';
 import useChatStore from '@/store/useChatStore';
 import { useToast } from '@/hooks/use-toast';
+import openai from '@/lib/openai';
 
 interface ChatInputProps {
   chatId: string;
@@ -111,9 +112,35 @@ export default function ChatInput({ chatId }: ChatInputProps) {
     setIsSending(true);
     
     try {
-      await sendNewMessage(chatId, user.uid, message.trim());
-      setMessage('');
-      textareaRef.current?.focus();
+      await sendNewMessage(chatId, user.uid, message.trim()).then(async () => {
+        // setMessage('');
+        // textareaRef.current?.focus();
+        
+        // const body = {
+        //   model: "qwen/qwq-32b:free",
+        //   messages: [
+        //     {
+        //       "role": "user",
+        //       "content": message.trim()
+        //     }
+        //   ]
+        // }
+
+        await openai.post("", {
+          model: "qwen/qwq-32b:free",
+          messages: [
+            {
+              role: "user",
+              content: message.trim(),
+            },
+          ],
+        }).then( async (res) => {
+          await sendNewMessage(chatId, "", res.data.choices[0].message.content);
+
+          // console.log("AI Response: ", res);
+        } );
+        
+      })
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -122,6 +149,8 @@ export default function ChatInput({ chatId }: ChatInputProps) {
       });
     } finally {
       setIsSending(false);
+      setMessage('');
+      textareaRef.current?.focus();
     }
   };
   

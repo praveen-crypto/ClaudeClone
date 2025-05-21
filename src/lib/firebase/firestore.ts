@@ -373,26 +373,15 @@ export const listenToMessages = (chatId: string, callback: (messages: Message[])
   }
 };
 
-export const addReaction = async (chatId: string, messageId: string, userId: string, reaction: string) => {
+export const updateMessage = async (chatId: string, messageId: string, content: string) => {
   try {
     const messageRef = doc(db, 'chats', chatId, 'messages', messageId);
-    const messageDoc = await getDoc(messageRef);
-    
-    if (messageDoc.exists()) {
-      const messageData = messageDoc.data();
-      const reactions = messageData.reactions || {};
-      
-      // Toggle reaction (add if not present, remove if present)
-      if (reactions[userId] === reaction) {
-        delete reactions[userId];
-      } else {
-        reactions[userId] = reaction;
-      }
-      
-      await updateDoc(messageRef, { reactions });
-    }
+    await updateDoc(messageRef, {
+      content,
+      updatedAt: Timestamp.now()
+    });
   } catch (error) {
-    console.error('Error adding reaction:', error);
+    console.error('Error updating message:', error);
     throw error;
   }
 };

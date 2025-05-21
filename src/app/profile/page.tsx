@@ -35,8 +35,7 @@ export default function ProfilePage() {
   }, [router]);
   
   const handleUpdateProfile = async () => {
-    // This is a placeholder for the actual update function
-    // You'll need to implement this in your firebase/auth.ts file
+    
     toast({
       title: "Profile updated",
       description: "Your profile has been updated successfully."
@@ -50,8 +49,8 @@ export default function ProfilePage() {
     setIsUploading(true);
     
     try {
-      // This is a placeholder for the actual upload function
-      // You'll need to implement this in your firebase/storage.ts file
+      
+      // need to implement this in firebase/storage.ts file
       // const url = await uploadProfilePicture(user.uid, file);
       // setPhotoURL(url);
       
@@ -79,74 +78,76 @@ export default function ProfilePage() {
     : email.substring(0, 2).toUpperCase();
   
   return (
-    <div className="container max-w-2xl py-10">
+    <div className="container  py-10 px-2">
       <Button variant="ghost" asChild className="mb-6">
         <Link href="/">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Chat
         </Link>
       </Button>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Profile</CardTitle>
-          <CardDescription>
-            Manage your account information and settings
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex flex-col items-center space-y-4">
-            <div className="relative">
-              <Avatar className="h-24 w-24">
-                <AvatarImage src={photoURL} alt={displayName} />
-                <AvatarFallback className="text-lg">{userInitials}</AvatarFallback>
-              </Avatar>
-              <Button 
-                size="sm" 
-                className="absolute bottom-0 right-0 rounded-full" 
-                variant="outline"
-                disabled={isUploading}
-              >
-                <label className="cursor-pointer flex items-center">
-                  <Upload className="h-4 w-4" />
-                  <input 
-                    type="file" 
-                    className="hidden" 
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                  />
-                </label>
-              </Button>
-            </div>
-          </div>
-          
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="displayName">Display Name</Label>
-              <Input
-                id="displayName"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-              />
+
+      <div className='card-container' >
+        <Card className='w-full p-0'>
+          <CardHeader>
+            <CardTitle>Profile</CardTitle>
+            <CardDescription>
+              Manage your account information and settings
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="relative">
+                <Avatar className="h-24 w-24">
+                  <AvatarImage src={photoURL} alt={displayName} />
+                  <AvatarFallback className="text-lg">{userInitials}</AvatarFallback>
+                </Avatar>
+                <Button 
+                  size="sm" 
+                  className="absolute bottom-0 right-0 rounded-full" 
+                  variant="outline"
+                  disabled={isUploading}
+                >
+                  <label className="cursor-pointer flex items-center">
+                    <Upload className="h-4 w-4" />
+                    <input 
+                      type="file" 
+                      className="hidden" 
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                    />
+                  </label>
+                </Button>
+              </div>
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                value={email}
-                disabled
-              />
-              <p className="text-sm text-muted-foreground">
-                Email cannot be changed. Contact support for assistance.
-              </p>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="displayName">Display Name</Label>
+                <Input
+                  id="displayName"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  value={email}
+                  disabled
+                />
+                <p className="text-sm text-muted-foreground">
+                  Email cannot be changed. Contact support for assistance.
+                </p>
+              </div>
             </div>
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button onClick={handleUpdateProfile}>Save Changes</Button>
-        </CardFooter>
-      </Card>
+          </CardContent>
+          <CardFooter>
+            <Button onClick={handleUpdateProfile}>Save Changes</Button>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 }

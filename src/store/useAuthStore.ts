@@ -175,11 +175,11 @@ const useAuthStore = create<AuthState>()(
             throw error;
           }
         },
-
+        
         setUser: (user) => {
           set({ user });
         },
-
+        
         clearError: () => {
           set({ error: null });
         },

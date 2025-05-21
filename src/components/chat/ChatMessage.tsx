@@ -35,22 +35,9 @@ export default function ChatMessage({
   isLoading = false,
   isThinking = false 
 }: ChatMessageProps) {
-  const [isAddingReaction, setIsAddingReaction] = useState(false);
-  const user = useAuthStore(state => state.user);
-  const { addMessageReaction, removeMessage } = useChatStore();
   
-  const handleReaction = async (reaction: string) => {
-    if (!user || isAddingReaction) return;
-    
-    setIsAddingReaction(true);
-    try {
-      await addMessageReaction(chatId, message.id, user.uid, reaction);
-    } catch (error) {
-      console.error('Error adding reaction:', error);
-    } finally {
-      setIsAddingReaction(false);
-    }
-  };
+  const user = useAuthStore(state => state.user);
+  const { removeMessage } = useChatStore();
   
   const handleDelete = async () => {
     try {
@@ -58,15 +45,6 @@ export default function ChatMessage({
     } catch (error) {
       console.error('Error deleting message:', error);
     }
-  };
-  
-  const hasUserReacted = (reaction: string) => {
-    return user && message.reactions && message.reactions[user.uid] === reaction;
-  };
-  
-  const reactionCount = (reaction: string) => {
-    if (!message.reactions) return 0;
-    return Object.values(message.reactions).filter(r => r === reaction).length;
   };
   
   const createdAt = message.createdAt instanceof Date 
@@ -116,8 +94,6 @@ export default function ChatMessage({
     return (
       <div className="prose dark:prose-invert max-w-none break-words">
         <ReactMarkdown
-          
-          
           remarkPlugins={[remarkGfm, remarkMath]}
           rehypePlugins={[rehypeKatex, rehypeRaw]}
           components={{
@@ -177,90 +153,15 @@ export default function ChatMessage({
           isAI ? "left-0" : "right-0"
         )}>
           <span className="text-muted-foreground">
-            {format(createdAt, 'h:mm a')}
+            {format( createdAt, 'h:mm a')}
           </span>
           
-          {/* Reaction buttons - only show on hover */}
-          {!isThinking && !isLoading && (
+          {/* Hover actions */}
+          {!isThinking && !isLoading && !isAI && (
             <div className={cn(
               "flex items-center gap-1 absolute bottom-0 opacity-0 group-hover:opacity-100 transition-opacity",
               isAI ? "left-0 -translate-y-full" : "right-0 -translate-y-full" 
             )}>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-6 w-6 rounded-full"
-                      onClick={() => handleReaction('like')}
-                      disabled={isAddingReaction}
-                    >
-                      <ThumbsUp className={cn(
-                        "h-3 w-3",
-                        hasUserReacted('like') && "fill-current text-blue-500"
-                      )} />
-                      {reactionCount('like') > 0 && (
-                        <span className="absolute -top-1 -right-1 text-[10px] font-medium rounded-full h-4 w-4 flex items-center justify-center bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
-                          {reactionCount('like')}
-                        </span>
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Like</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-6 w-6 rounded-full"
-                      onClick={() => handleReaction('love')}
-                      disabled={isAddingReaction}
-                    >
-                      <Heart className={cn(
-                        "h-3 w-3",
-                        hasUserReacted('love') && "fill-current text-red-500"
-                      )} />
-                      {reactionCount('love') > 0 && (
-                        <span className="absolute -top-1 -right-1 text-[10px] font-medium rounded-full h-4 w-4 flex items-center justify-center bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300">
-                          {reactionCount('love')}
-                        </span>
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Love</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-6 w-6 rounded-full"
-                      onClick={() => handleReaction('save')}
-                      disabled={isAddingReaction}
-                    >
-                      <Bookmark className={cn(
-                        "h-3 w-3",
-                        hasUserReacted('save') && "fill-current text-purple-500"
-                      )} />
-                      {reactionCount('save') > 0 && (
-                        <span className="absolute -top-1 -right-1 text-[10px] font-medium rounded-full h-4 w-4 flex items-center justify-center bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300">
-                          {reactionCount('save')}
-                        </span>
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Save</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button

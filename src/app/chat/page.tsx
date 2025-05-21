@@ -62,9 +62,9 @@ export default function ChatIndexPage() {
     return (
       <div className="flex h-screen flex-col items-center justify-center p-4">
         <div className="max-w-lg text-center space-y-4">
-          <h1 className="text-3xl font-bold tracking-tight">Welcome to the Chat App</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Welcome to Synduct Chat App</h1>
           <p className="text-muted-foreground">
-            Create your first chat to get started with real-time messaging.
+            Create your first chat to get started 😊
           </p>
           <Button onClick={handleCreateChat} className="mt-4">
             Create a new chat

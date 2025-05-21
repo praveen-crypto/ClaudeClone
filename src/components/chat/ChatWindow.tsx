@@ -47,17 +47,17 @@ export default function ChatWindow({ chatId }: ChatWindowProps) {
   }, [chatId, loadMessages]);
   
   // Set up real-time listener for new messages
-  useEffect(() => {
-    if (!chatId) return;
+  // useEffect(() => {
+  //   if (!chatId) return;
     
-    const unsubscribe = listenToMessages(chatId, (messages: Message[]) => {
-      setMessages(messages);
-    });
+  //   const unsubscribe = listenToMessages(chatId, (messages: Message[]) => {
+  //     setMessages(messages);
+  //   });
     
-    return () => {
-      unsubscribe();
-    };
-  }, [chatId, setMessages]);
+  //   return () => {
+  //     unsubscribe();
+  //   };
+  // }, [chatId, setMessages]);
   
   // Scroll to bottom when new messages are added
   useEffect(() => {

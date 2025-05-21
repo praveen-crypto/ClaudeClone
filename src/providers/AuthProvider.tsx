@@ -12,8 +12,6 @@ const AuthContext = createContext<AuthContextType>({ isInitialized: false });
 
 export const useAuth = () => useContext(AuthContext);
 
-
-
 const setCookie = (name: string, value: string, days: number) => {
   let expires = "";
   if (days) {
